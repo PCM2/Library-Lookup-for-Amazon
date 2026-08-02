@@ -9,6 +9,9 @@ catch(e) {
 
 function insertLink(data) {
 	var div = document.getElementById('bylineInfo');
+	if (!div) {
+		return;
+	}
 	var sp = document.createElement('br');
 	var link = document.createElement('a');
 	//link.setAttribute ( 'title', data.hrefTitle );
@@ -20,10 +23,16 @@ function insertLink(data) {
 	div.appendChild(link);
 }
 
-chrome.extension.sendRequest(
-		{
-		'action' : 'doLookup',
-		'isbn' : isbn
-		}, 
-		insertLink
-);
+if (isbn) {
+	chrome.runtime.sendMessage(
+			{
+			'action' : 'doLookup',
+			'isbn' : isbn
+			},
+			function(data) {
+				if (data) {
+					insertLink(data);
+				}
+			}
+	);
+}

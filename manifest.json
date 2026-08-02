@@ -1,14 +1,14 @@
 {
-   "manifest_version": 2,
+   "manifest_version": 3,
    "name": "Library Lookup for Amazon",
    "description": "Checks availability in San Francisco public libraries while browsing Amazon.com",
-   "permissions": [
+   "host_permissions": [
    	"*://*.sfpl.org/*"
    ],
    "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
    "version": "0.3.2",
    "background": {
-       "scripts": ["ll-background.js"]
+       "service_worker": "ll-background.js"
    },
    "content_scripts": [ 
      {
