@@ -3,10 +3,10 @@
    "name": "Library Lookup for Amazon",
    "description": "Checks availability in San Francisco public libraries while browsing Amazon.com",
    "host_permissions": [
-   	"*://*.sfpl.org/*"
+   	"https://gateway.bibliocommons.com/*"
    ],
    "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
-   "version": "0.4.0",
+   "version": "0.4.5",
    "background": {
        "service_worker": "ll-background.js"
    },

@@ -1,47 +1,69 @@
 /* Code for the background service worker of SF Library Lookup */
 
-var libraryBaseURL = 'https://sflib1.sfpl.org';
 var libraryName = 'SF Public';
-var libraryAvailability = /CHECK SHELF/;
-var libraryDueBack = /DUE (\d{2}-\d{2}-\d{2})/;
-var libraryNoRecord = /no matches found/i;
-var libraryOrdered = /ordered for/i;
+var libraryAPIURL = 'https://gateway.bibliocommons.com/v2/libraries/sfpl/bibs/search?searchType=keyword&query=';
+
+// Converts an ISBN-10 to its equivalent ISBN-13, or passes an ISBN-13 through
+// unchanged. Needed because BiblioCommons' search index doesn't reliably
+// match a bare ISBN-10 query even when the title is in the catalog, and
+// catalog records mix ISBN-10/ISBN-13 forms in their isbns list.
+function toISBN13(isbn) {
+	var digits = (isbn || '').toUpperCase();
+	if (digits.length === 13) {
+		return digits;
+	}
+	if (digits.length !== 10) {
+		return null;
+	}
+	var core = '978'+digits.slice(0, 9);
+	var sum = 0;
+	for (var i = 0; i < 12; i++) {
+		sum += parseInt(core[i], 10) * (i % 2 === 0 ? 1 : 3);
+	}
+	var check = (10 - (sum % 10)) % 10;
+	return core+check;
+}
 
 async function doLookup(isbn) {
+	var isbn13 = toISBN13(isbn);
+	var queryISBN = isbn13 || isbn;
+
 	var data = {
-		'isbn' : isbn,
+		'isbn' : queryISBN,
 		'hrefTitle' : null,
 		'aLabel': null
 	};
 
-	var res = await fetch(libraryBaseURL+'/search/?searchtype=i&searcharg='+isbn);
-	var page = await res.text();
+	var res = await fetch(libraryAPIURL+queryISBN);
+	if (!res.ok) {
+		return null;
+	}
+	var json = await res.json();
+	var bibs = (json.entities && json.entities.bibs) || {};
 
-	if (libraryNoRecord.test(page)) {
+	var bib = Object.values(bibs).find(function(b) {
+		var isbns = (b.briefInfo && b.briefInfo.isbns) || [];
+		return isbns.indexOf(isbn) !== -1 || isbns.some(function(x) {
+			return toISBN13(x) === isbn13;
+		});
+	});
+
+	if (!bib) {
 		return null;
 	}
 
-	var ordered = libraryOrdered.test(page);
+	data.hrefTitle = bib.briefInfo.title;
 
-	var libraryFullURL = libraryBaseURL+"/search?/i"+isbn+"/i"+isbn+"/1,1,1,E/holdings&FF=i"+isbn+"&1,1,";
-	var resb = await fetch(libraryFullURL);
-	var pageb = await resb.text();
-
-	if (libraryAvailability.test(pageb)) {
+	var availability = bib.availability || {};
+	if (availability.statusType === 'AVAILABLE' && availability.availableCopies > 0) {
 		data.aLabel = "Hey! It's available at the "+libraryName+" Library!";
-		return data;
-	}
-	if (libraryDueBack.test(pageb)) {
-		var due = pageb.match(libraryDueBack)[1];
-		data.aLabel = "Due back at the "+libraryName+" Library on or before "+due;
-		return data;
-	}
-	if (ordered) {
+	} else if (availability.onOrderCopies > 0) {
 		data.aLabel = "On order at the "+libraryName+" Library. Check again soon!";
-		return data;
+	} else {
+		data.aLabel = "Checked out at the "+libraryName+" Library. Place a hold to get it next!";
 	}
 
-	return null;
+	return data;
 }
 
 // Handles messages sent via chrome.runtime.sendMessage().
