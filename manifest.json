@@ -6,7 +6,7 @@
    	"*://*.sfpl.org/*"
    ],
    "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
-   "version": "0.3.2",
+   "version": "0.4.0",
    "background": {
        "service_worker": "ll-background.js"
    },
