@@ -2,8 +2,7 @@ Long story short, I cooked up a cute little Chrome extension where, whenever you
 
 The extension notifies you with a link right underneath the author's name, like so:
 
-<img width="1280" height="800" alt="LibraryLookup-SF" src="https://github.com/user-attachments/assets/bcb88423-e360-4388-8cf9-4376bd605516" />
-
+![Screenshot illusration of Library Lookup for SFPL](https://github.com/PCM2/Library-Lookup-for-Amazon/blob/main/LibraryLookup-SF.png)
 
 Note that because the plugin is keyed off ISBN, it doesn't always register on every product page at Amazon. For example, if you're looking at the Kindle page, it might not find anything at all. You might also need to play around, switching between the paperback and hardcover versions of the book.
 
