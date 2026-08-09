@@ -7,7 +7,7 @@
 var LL_DEFAULT_SLUG = 'sfpl';
 
 var LL_LIBRARIES = [
-	{ slug: 'sfpl',             name: 'SF Public' },
+	{ slug: 'sfpl',             name: 'San Francisco Public' },
 	{ slug: 'aclibrary',        name: 'Alameda County' },
 	{ slug: 'ccclib',           name: 'Contra Costa County' },
 	{ slug: 'marinlibrary',     name: 'Marin County' },
