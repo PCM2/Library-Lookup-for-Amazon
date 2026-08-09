@@ -1,5 +1,5 @@
 var librarySearchURL = 'https://sfpl.bibliocommons.com/v2/search?query=';
-var isbnREdelimited = /\/(\d{7,9}[\dX])(?:[/?#]|$)/;
+var isbnREdelimited = /\/(\d{9}[\dX])(?:[/?#]|$)/;
 
 function findISBN() {
 	var m = location.href.match(isbnREdelimited);
