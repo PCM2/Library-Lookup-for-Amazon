@@ -6,20 +6,22 @@
 
 var LL_DEFAULT_SLUG = 'sfpl';
 
+// San Francisco is kept first (it's the default); the rest are alphabetized
+// by name for the options dropdown.
 var LL_LIBRARIES = [
 	{ slug: 'sfpl',             name: 'San Francisco Public' },
 	{ slug: 'aclibrary',        name: 'Alameda County' },
 	{ slug: 'ccclib',           name: 'Contra Costa County' },
-	{ slug: 'marinlibrary',     name: 'Marin County' },
-	{ slug: 'smcl',             name: 'San Mateo County' },
-	{ slug: 'sccl',             name: 'Santa Clara County' },
-	{ slug: 'sonoma',           name: 'Sonoma County' },
-	{ slug: 'livermorelibrary', name: 'Livermore' },
 	{ slug: 'hayward',          name: 'Hayward' },
+	{ slug: 'livermorelibrary', name: 'Livermore' },
+	{ slug: 'marinlibrary',     name: 'Marin County' },
+	{ slug: 'napalibrary',      name: 'Napa County' },
+	{ slug: 'oaklandlibrary',   name: 'Oakland' },
 	{ slug: 'paloalto',         name: 'Palo Alto' },
 	{ slug: 'sjpl',             name: 'San José' },
-	{ slug: 'oaklandlibrary',   name: 'Oakland' },
-	{ slug: 'napalibrary',      name: 'Napa County' }
+	{ slug: 'smcl',             name: 'San Mateo County' },
+	{ slug: 'sccl',             name: 'Santa Clara County' },
+	{ slug: 'sonoma',           name: 'Sonoma County' }
 ];
 
 function llGetLibrary(slug) {
