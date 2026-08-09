@@ -17,16 +17,17 @@ Currently supported (all run on the BiblioCommons catalog platform):
 - San Francisco Public Library
 - Alameda County Library
 - Contra Costa County Library
+- Hayward Public Library
+- Livermore Public Library
 - Marin County Free Library
+- Napa County Library
+- Oakland Public Library
+- Palo Alto City Library
+- Pleasanton Public Library
+- San José Public Library
 - San Mateo County Libraries
 - Santa Clara County Library
 - Sonoma County Library
-- Livermore Public Library
-- Hayward Public Library
-- Palo Alto City Library
-- San José Public Library
-- Oakland Public Library
-- Napa County Library
 
 Don't see your library? It needs to run on BiblioCommons for this extension to work with it — let me know if there's one you'd like added.
 
