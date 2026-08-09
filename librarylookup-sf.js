@@ -31,7 +31,9 @@ function insertLink(data) {
 	}
 	var sp = document.createElement('br');
 	var link = document.createElement('a');
-	//link.setAttribute ( 'title', data.hrefTitle );
+	if (data.hrefTitle) {
+		link.setAttribute('title', data.hrefTitle);
+	}
 	link.setAttribute('href', librarySearchURL+encodeURIComponent(data.isbn));
 	link.setAttribute('target','_blank');
 	var label = document.createTextNode( data.aLabel );
