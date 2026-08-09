@@ -1,4 +1,3 @@
-var librarySearchURL = 'https://sfpl.bibliocommons.com/v2/search?query=';
 var isbnREdelimited = /\/(\d{9}[\dX])(?:[/?#]|$)/;
 
 function findISBN() {
@@ -34,7 +33,7 @@ function insertLink(data) {
 	if (data.hrefTitle) {
 		link.setAttribute('title', data.hrefTitle);
 	}
-	link.setAttribute('href', librarySearchURL+encodeURIComponent(data.isbn));
+	link.setAttribute('href', data.searchHref);
 	link.setAttribute('target','_blank');
 	var label = document.createTextNode( data.aLabel );
 	link.appendChild(label);
