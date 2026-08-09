@@ -20,7 +20,7 @@
   "content_scripts": [
     {
       "matches": [ "*://*.amazon.com/*" ],
-      "js": [ "librarylookup-sf.js" ]
+      "js": [ "librarylookup.js" ]
     }
   ],
   "icons": {
