@@ -2,6 +2,9 @@
   "manifest_version": 3,
   "name": "Library Lookup for Amazon",
   "description": "Checks availability in San Francisco public libraries while browsing Amazon.com",
+  "permissions": [
+    "storage"
+  ],
   "host_permissions": [
     "https://gateway.bibliocommons.com/*"
   ],

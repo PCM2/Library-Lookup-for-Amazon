@@ -24,9 +24,33 @@ function toISBN13(isbn) {
 	return core+check;
 }
 
+// Cache of resolved lookups for this browser session, keyed by ISBN, so
+// bouncing between formats/editions of the same book (or reloading) doesn't
+// re-fetch from BiblioCommons for an answer that hasn't changed. Only
+// genuine successes are cached (see doLookup) — chrome.storage.session is
+// cleared automatically when the browser session ends, so entries never
+// need an explicit expiry.
+var CACHE_KEY_PREFIX = 'isbnCache:';
+
+async function getCachedLookup(isbn) {
+	var key = CACHE_KEY_PREFIX+isbn;
+	var stored = await chrome.storage.session.get(key);
+	return stored[key] || null;
+}
+
+async function setCachedLookup(isbn, data) {
+	var key = CACHE_KEY_PREFIX+isbn;
+	await chrome.storage.session.set({ [key]: data });
+}
+
 async function doLookup(isbn) {
 	var isbn13 = toISBN13(isbn);
 	var queryISBN = isbn13 || isbn;
+
+	var cached = await getCachedLookup(queryISBN);
+	if (cached) {
+		return cached;
+	}
 
 	var data = {
 		'isbn' : queryISBN,
@@ -64,6 +88,7 @@ async function doLookup(isbn) {
 			data.aLabel = "Checked out at the "+libraryName+" Library. Place a hold to get it next!";
 		}
 
+		await setCachedLookup(queryISBN, data);
 		return data;
 	} catch (err) {
 		// Network error, CORS failure, BiblioCommons downtime, bad JSON, etc.
