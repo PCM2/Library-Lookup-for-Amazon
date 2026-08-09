@@ -1,5 +1,4 @@
-var librarySearchURL = 'https://sfpl.bibliocommons.com/v2/search?query=';
-var isbnREdelimited = /\/(\d{7,9}[\dX])(?:[/?#]|$)/;
+var isbnREdelimited = /\/(\d{9}[\dX])(?:[/?#]|$)/;
 
 function findISBN() {
 	var m = location.href.match(isbnREdelimited);
@@ -31,8 +30,10 @@ function insertLink(data) {
 	}
 	var sp = document.createElement('br');
 	var link = document.createElement('a');
-	//link.setAttribute ( 'title', data.hrefTitle );
-	link.setAttribute('href', librarySearchURL+encodeURIComponent(data.isbn));
+	if (data.hrefTitle) {
+		link.setAttribute('title', data.hrefTitle);
+	}
+	link.setAttribute('href', data.searchHref);
 	link.setAttribute('target','_blank');
 	var label = document.createTextNode( data.aLabel );
 	link.appendChild(label);

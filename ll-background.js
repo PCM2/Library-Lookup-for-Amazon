@@ -1,7 +1,6 @@
-/* Code for the background service worker of SF Library Lookup */
+/* Code for the background service worker of Library Lookup */
 
-var libraryName = 'SF Public';
-var libraryAPIURL = 'https://gateway.bibliocommons.com/v2/libraries/sfpl/bibs/search?searchType=keyword&query=';
+importScripts('ll-libraries.js');
 
 // Converts an ISBN-10 to its equivalent ISBN-13, or passes an ISBN-13 through
 // unchanged. Needed because BiblioCommons' search index doesn't reliably
@@ -24,46 +23,93 @@ function toISBN13(isbn) {
 	return core+check;
 }
 
+// Cache of resolved lookups for this browser session, keyed by library slug
+// and ISBN, so bouncing between formats/editions of the same book (or
+// reloading) doesn't re-fetch from BiblioCommons for an answer that hasn't
+// changed. Keying by slug too means switching libraries never serves a
+// stale result cached under a different library. Only genuine successes are
+// cached (see doLookup) — chrome.storage.session is cleared automatically
+// when the browser session ends, so entries never need an explicit expiry.
+var CACHE_KEY_PREFIX = 'isbnCache:';
+
+async function getCachedLookup(slug, isbn) {
+	var key = CACHE_KEY_PREFIX+slug+':'+isbn;
+	var stored = await chrome.storage.session.get(key);
+	return stored[key] || null;
+}
+
+async function setCachedLookup(slug, isbn, data) {
+	var key = CACHE_KEY_PREFIX+slug+':'+isbn;
+	await chrome.storage.session.set({ [key]: data });
+}
+
+// Reads the user's selected library from chrome.storage.sync (so it follows
+// them across Chrome installs), falling back to SF Public if unset or no
+// longer recognized. Re-read on every lookup rather than cached in memory,
+// so a library switch in the options page takes effect on the very next
+// lookup with no extra invalidation logic.
+async function getSelectedLibrary() {
+	var stored = await chrome.storage.sync.get('selectedLibrary');
+	return llResolveLibrary(stored.selectedLibrary);
+}
+
 async function doLookup(isbn) {
+	var library = await getSelectedLibrary();
 	var isbn13 = toISBN13(isbn);
 	var queryISBN = isbn13 || isbn;
+
+	var cached = await getCachedLookup(library.slug, queryISBN);
+	if (cached) {
+		return cached;
+	}
 
 	var data = {
 		'isbn' : queryISBN,
 		'hrefTitle' : null,
-		'aLabel': null
+		'aLabel': null,
+		'searchHref': llSearchURL(library)+encodeURIComponent(queryISBN)
 	};
 
-	var res = await fetch(libraryAPIURL+queryISBN);
-	if (!res.ok) {
-		return null;
-	}
-	var json = await res.json();
-	var bibs = (json.entities && json.entities.bibs) || {};
+	try {
+		var res = await fetch(llApiURL(library)+queryISBN);
+		if (!res.ok) {
+			throw new Error('lookup request failed with status '+res.status);
+		}
+		var json = await res.json();
+		var bibs = (json.entities && json.entities.bibs) || {};
 
-	var bib = Object.values(bibs).find(function(b) {
-		var isbns = (b.briefInfo && b.briefInfo.isbns) || [];
-		return isbns.indexOf(isbn) !== -1 || isbns.some(function(x) {
-			return toISBN13(x) === isbn13;
+		var bib = Object.values(bibs).find(function(b) {
+			var isbns = (b.briefInfo && b.briefInfo.isbns) || [];
+			return isbns.indexOf(isbn) !== -1 || isbns.some(function(x) {
+				return toISBN13(x) === isbn13;
+			});
 		});
-	});
 
-	if (!bib) {
-		return null;
+		if (!bib) {
+			return null;
+		}
+
+		data.hrefTitle = bib.briefInfo.title;
+
+		var availability = bib.availability || {};
+		if (availability.statusType === 'AVAILABLE' && availability.availableCopies > 0) {
+			data.aLabel = "Hey! It's available at the "+library.name+" Library!";
+		} else if (availability.onOrderCopies > 0) {
+			data.aLabel = "On order at the "+library.name+" Library. Check again soon!";
+		} else {
+			data.aLabel = "Checked out at the "+library.name+" Library. Place a hold to get it next!";
+		}
+
+		await setCachedLookup(library.slug, queryISBN, data);
+		return data;
+	} catch (err) {
+		// Network error, CORS failure, BiblioCommons downtime, bad JSON, etc.
+		// Surface it in the same spot the success message would appear,
+		// rather than failing silently.
+		console.error('Library Lookup: lookup failed for ISBN '+queryISBN+':', err);
+		data.aLabel = "Couldn't check the "+library.name+" Library right now. Try again later.";
+		return data;
 	}
-
-	data.hrefTitle = bib.briefInfo.title;
-
-	var availability = bib.availability || {};
-	if (availability.statusType === 'AVAILABLE' && availability.availableCopies > 0) {
-		data.aLabel = "Hey! It's available at the "+libraryName+" Library!";
-	} else if (availability.onOrderCopies > 0) {
-		data.aLabel = "On order at the "+libraryName+" Library. Check again soon!";
-	} else {
-		data.aLabel = "Checked out at the "+libraryName+" Library. Place a hold to get it next!";
-	}
-
-	return data;
 }
 
 // Handles messages sent via chrome.runtime.sendMessage().

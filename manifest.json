@@ -1,23 +1,30 @@
 {
-   "manifest_version": 3,
-   "name": "Library Lookup for Amazon",
-   "description": "Checks availability in San Francisco public libraries while browsing Amazon.com",
-   "host_permissions": [
-   	"https://gateway.bibliocommons.com/*"
-   ],
-   "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
-   "version": "0.4.5",
-   "background": {
-       "service_worker": "ll-background.js"
-   },
-   "content_scripts": [ 
-     {
-	  "matches": [ "*://*.amazon.com/*" ],
+  "manifest_version": 3,
+  "name": "Library Lookup for Amazon",
+  "description": "Checks availability at your local Bay Area public library while browsing Amazon.com",
+  "permissions": [
+    "storage"
+  ],
+  "host_permissions": [
+    "https://gateway.bibliocommons.com/*"
+  ],
+  "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
+  "version": "0.5.0",
+  "options_ui": {
+    "page": "options.html",
+    "open_in_tab": true
+  },
+  "background": {
+    "service_worker": "ll-background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [ "*://*.amazon.com/*" ],
       "js": [ "librarylookup-sf.js" ]
-   	 } 
-   ],
-   "icons": {
-		"48": "icon48.png",
-		"128": "icon128.png"
-   }
+    }
+  ],
+  "icons": {
+    "48": "icon48.png",
+    "128": "icon128.png"
+  }
 }
