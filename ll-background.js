@@ -44,10 +44,10 @@ async function setCachedLookup(slug, isbn, data) {
 }
 
 // Reads the user's selected library from chrome.storage.sync (so it follows
-// them across Chrome installs), falling back to SF Public if unset or no
-// longer recognized. Re-read on every lookup rather than cached in memory,
-// so a library switch in the options page takes effect on the very next
-// lookup with no extra invalidation logic.
+// them across Chrome installs), falling back to San Francisco Public if
+// unset or no longer recognized. Re-read on every lookup rather than cached
+// in memory, so a library switch in the options page takes effect on the
+// very next lookup with no extra invalidation logic.
 async function getSelectedLibrary() {
 	var stored = await chrome.storage.sync.get('selectedLibrary');
 	return llResolveLibrary(stored.selectedLibrary);
