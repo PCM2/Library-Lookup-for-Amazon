@@ -34,36 +34,45 @@ async function doLookup(isbn) {
 		'aLabel': null
 	};
 
-	var res = await fetch(libraryAPIURL+queryISBN);
-	if (!res.ok) {
-		return null;
-	}
-	var json = await res.json();
-	var bibs = (json.entities && json.entities.bibs) || {};
+	try {
+		var res = await fetch(libraryAPIURL+queryISBN);
+		if (!res.ok) {
+			throw new Error('lookup request failed with status '+res.status);
+		}
+		var json = await res.json();
+		var bibs = (json.entities && json.entities.bibs) || {};
 
-	var bib = Object.values(bibs).find(function(b) {
-		var isbns = (b.briefInfo && b.briefInfo.isbns) || [];
-		return isbns.indexOf(isbn) !== -1 || isbns.some(function(x) {
-			return toISBN13(x) === isbn13;
+		var bib = Object.values(bibs).find(function(b) {
+			var isbns = (b.briefInfo && b.briefInfo.isbns) || [];
+			return isbns.indexOf(isbn) !== -1 || isbns.some(function(x) {
+				return toISBN13(x) === isbn13;
+			});
 		});
-	});
 
-	if (!bib) {
-		return null;
+		if (!bib) {
+			return null;
+		}
+
+		data.hrefTitle = bib.briefInfo.title;
+
+		var availability = bib.availability || {};
+		if (availability.statusType === 'AVAILABLE' && availability.availableCopies > 0) {
+			data.aLabel = "Hey! It's available at the "+libraryName+" Library!";
+		} else if (availability.onOrderCopies > 0) {
+			data.aLabel = "On order at the "+libraryName+" Library. Check again soon!";
+		} else {
+			data.aLabel = "Checked out at the "+libraryName+" Library. Place a hold to get it next!";
+		}
+
+		return data;
+	} catch (err) {
+		// Network error, CORS failure, BiblioCommons downtime, bad JSON, etc.
+		// Surface it in the same spot the success message would appear,
+		// rather than failing silently.
+		console.error('Library Lookup: lookup failed for ISBN '+queryISBN+':', err);
+		data.aLabel = "Couldn't check the "+libraryName+" Library right now. Try again later.";
+		return data;
 	}
-
-	data.hrefTitle = bib.briefInfo.title;
-
-	var availability = bib.availability || {};
-	if (availability.statusType === 'AVAILABLE' && availability.availableCopies > 0) {
-		data.aLabel = "Hey! It's available at the "+libraryName+" Library!";
-	} else if (availability.onOrderCopies > 0) {
-		data.aLabel = "On order at the "+libraryName+" Library. Check again soon!";
-	} else {
-		data.aLabel = "Checked out at the "+libraryName+" Library. Place a hold to get it next!";
-	}
-
-	return data;
 }
 
 // Handles messages sent via chrome.runtime.sendMessage().
