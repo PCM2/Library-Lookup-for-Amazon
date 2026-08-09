@@ -32,7 +32,7 @@ Currently supported (all run on the BiblioCommons catalog platform):
 Don't see your library? It needs to run on BiblioCommons for this extension to work with it — let me know if there's one you'd like added.
 
 ### Tech Notes
-The current version is much improved from previous ones. For one thing, in keeping with the Chrome Extension Manifest v3 format, it no longer uses a Background Page, so it's no longer running all the time in the background. I've also switched it from using the legacy SFPL online catalog to the new catalog based on Bibliocommons. An additional prompt has also been added that suggests you reserve a copy of a book when all available copies are currently checked out.
+The current version is much improved from previous ones. For one thing, in keeping with the Chrome Extension Manifest v3 format, it no longer uses a Background Page, so it's no longer running all the time in the background. I've also switched it from using the legacy SFPL online catalog to the new catalog based on Bibliocommons. An additional prompt has also been added that suggests you reserve a copy of a book when all available copies are currently checked out. There's now also better error handling for when the extension can't reach Bibliocommons for some reason.
 
 The list of supported libraries lives in `ll-libraries.js`, shared between the background service worker and the options page; your selected library is persisted via `chrome.storage.sync`.
 
