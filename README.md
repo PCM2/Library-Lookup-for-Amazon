@@ -37,3 +37,23 @@ The current version is much improved from previous ones. For one thing, in keepi
 The list of supported libraries lives in `ll-libraries.js`, shared between the background service worker and the options page; your selected library is persisted via `chrome.storage.sync`.
 
 Amazon occasionally changes its product page UI, which can break how this extension works. If you think you've spotted such an instance, let me know.
+
+### Changelog
+
+**0.5.1** (2026-08-30)
+- Fixed: books whose Amazon ASIN doesn't encode their ISBN — common for newer or self-published titles, especially ones with a 979-prefixed ISBN-13, which has no ISBN-10 form at all — now get a library lookup, by reading the ISBN out of Amazon's product-details panel instead of failing silently.
+
+**0.5.0** (2026-08-08)
+- Added support for 13 more Bay Area libraries on BiblioCommons (Alameda County, Contra Costa County, Hayward, Livermore, Marin County, Napa County, Oakland, Palo Alto, Pleasanton, San José, San Mateo County, Santa Clara County, and Sonoma County), selectable from a new options page and synced via `chrome.storage.sync`.
+- Successful lookups are now cached per library for the browser session, so switching between editions/formats of the same book, or reloading, doesn't re-fetch from BiblioCommons.
+- Added error handling: a BiblioCommons outage or network failure now shows a message in place of the lookup link instead of failing silently.
+- Tightened the ISBN regex to match only exact ISBN-10-length strings.
+- Restored the tooltip on the injected library link.
+
+**0.4.5** (2026-08-02)
+- Switched from San Francisco Public Library's legacy online catalog to its BiblioCommons-based catalog.
+
+**0.4.0** (2026-08-02)
+- Ported the extension to Chrome's Manifest V3, replacing the always-running background page with an on-demand service worker.
+
+Versions before 0.4.0 predate this repository's release history.
