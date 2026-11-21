@@ -37,10 +37,19 @@ function llResolveLibrary(slug) {
 	return llGetLibrary(slug) || llGetLibrary(LL_DEFAULT_SLUG);
 }
 
-function llApiURL(lib) {
-	return 'https://gateway.bibliocommons.com/v2/libraries/'+lib.slug+'/bibs/search?searchType=keyword&query=';
+// Returns the gateway search URL ending in "query=", ready for the
+// URL-encoded query to be appended. params optionally overrides or adds
+// search parameters, e.g. { searchType: 'title', f_FORMAT: 'DVD|BLURAY' }.
+function llApiURL(lib, params) {
+	var qs = new URLSearchParams(Object.assign({ searchType: 'keyword' }, params || {}));
+	return 'https://gateway.bibliocommons.com/v2/libraries/'+lib.slug+'/bibs/search?'+qs.toString()+'&query=';
 }
 
 function llSearchURL(lib) {
 	return 'https://'+lib.slug+'.bibliocommons.com/v2/search?query=';
+}
+
+// Link to a single catalog record, by the bib id the gateway returns.
+function llRecordURL(lib, bibId) {
+	return 'https://'+lib.slug+'.bibliocommons.com/v2/record/'+encodeURIComponent(bibId);
 }

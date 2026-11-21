@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Library Lookup for Amazon",
-  "description": "Checks availability at your local Bay Area public library while browsing Amazon.com",
+  "description": "Checks availability of books, DVDs and Blu-rays at your local Bay Area public library while browsing Amazon.com",
   "permissions": [
     "storage"
   ],
@@ -9,7 +9,7 @@
     "https://gateway.bibliocommons.com/*"
   ],
   "homepage_url": "http://fatalexception.org/download/LibraryLookup-SF.crx",
-  "version": "0.5.1",
+  "version": "0.6.0",
   "options_ui": {
     "page": "options.html",
     "open_in_tab": true
