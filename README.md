@@ -46,7 +46,7 @@ Amazon occasionally changes its product page UI, which can break how this extens
 
 ### Changelog
 
-**0.6.0**
+**0.6.0** (2026-11-22)
 - Added DVD and Blu-ray support: disc listings are looked up by UPC (from Amazon's "Item model number"), falling back to an exact-title search of the library's DVDs and Blu-rays when there's no UPC or no exact match. Disc links always name the format (DVD or Blu-ray) and open the matching catalog record. When the library has a novel with the movie's title, a book link appears first.
 
 **0.5.1** (2026-08-30)
