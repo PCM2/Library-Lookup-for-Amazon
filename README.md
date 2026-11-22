@@ -1,18 +1,18 @@
-Long story short, I cooked up a cute little Chrome extension where, whenever you're browsing a book listing on Amazon.com, it will automatically look up that book's ISBN and let you know if it's available at your local public library. Thinking of buying a book? Maybe you can save some money (and support your community) by picking up a copy at the library.
+Long story short, I cooked up a cute little Chrome extension where, whenever you're browsing a book listing on Amazon.com, it will automatically look up that book's ISBN and let you know if it's available at your local public library. Thinking of buying a book, DVD, or Blu-Ray? Maybe you can save some money (and support your community) by picking up a copy at the library instead.
 
 The extension notifies you with a link right underneath the author's name, like so:
 
 ![Screenshot illusration of Library Lookup for SFPL](https://github.com/PCM2/Library-Lookup-for-Amazon/blob/main/LibraryLookup-SF.png)
 
-Note that because the plugin is keyed off ISBN, it doesn't always register on every product page at Amazon. For example, if you're looking at the Kindle page, it might not find anything at all. You might also need to play around, switching between the paperback and hardcover versions of the book.
+The extension is confirmed to work on Microsoft Edge, and it will probably work on any other Chromium-based browser, too. You can [install it from the Chrome Web Store here](https://chromewebstore.google.com/detail/library-lookup-for-amazon/pamchhengjpajoahfigloobiagiabjjc).
+
+Note that because the book lookup portion of the plugin is keyed off ISBN, it doesn't always register on every product page at Amazon. For example, if you're looking at the Kindle page, it might not find anything at all. You might also need to play around, switching between the paperback and hardcover versions of the book.
 
 ### Movies and TV on DVD and Blu-ray
 
-The extension also works on Amazon's DVD, Blu-ray, and 4K disc listings. Discs don't have ISBNs, so it uses the disc's UPC instead, which Amazon often lists as the "Item model number" under Product Details. That finds the exact disc in the library's catalog. Some listings don't show a UPC (many older and boutique releases put a catalog number there instead), and sometimes the library owns a different edition. In those cases the extension falls back to searching the library's DVDs and Blu-rays for an exact title match. The link always says which format the library has (e.g. "The DVD is available"). For a title match, hovering over the link notes that it may be a different edition. The link opens the matching record in the library's catalog.
+As of version 0.6.0, the extension also provides beta support for Amazon's DVD, Blu-ray, and 4K disc listings. Discs don't have ISBNs, so it uses the disc's UPC instead, which Amazon often lists as the "Item model number" under Product Details. That finds the exact disc in the library's catalog. Some listings don't show a UPC (many older and boutique releases put a catalog number there instead), and sometimes the library owns a different edition. In those cases the extension falls back to searching the library's DVDs and Blu-rays for an exact title match. The link always says which format the library has (e.g. "The DVD is available"). For a title match, hovering over the link notes that it may be a different edition. The link opens the matching record in the library's catalog.
 
 If the movie shares its title with a novel the library has, such as *The Da Vinci Code* or *Jurassic Park*, a link to the book appears first, with the disc link below it. Library catalogs don't record which book a film was based on, so this is a careful guess. The book must be fiction with exactly the film's title, and it must be clearly the main book by that title. That avoids, say, linking the *Casablanca* movie to a Moroccan cookbook, or *Oppenheimer* to its screenplay. Hover over the book link to see its title and author.
-
-The extension is confirmed to work on Microsoft Edge, and it will probably work on any other Chromium-based browser, too. You can [install it from the Chrome Web Store here](https://chromewebstore.google.com/detail/library-lookup-for-amazon/pamchhengjpajoahfigloobiagiabjjc).
 
 ### Choosing your library
 
@@ -46,7 +46,7 @@ Amazon occasionally changes its product page UI, which can break how this extens
 
 ### Changelog
 
-**0.6.0** (unreleased)
+**0.6.0**
 - Added DVD and Blu-ray support: disc listings are looked up by UPC (from Amazon's "Item model number"), falling back to an exact-title search of the library's DVDs and Blu-rays when there's no UPC or no exact match. Disc links always name the format (DVD or Blu-ray) and open the matching catalog record. When the library has a novel with the movie's title, a book link appears first.
 
 **0.5.1** (2026-08-30)
