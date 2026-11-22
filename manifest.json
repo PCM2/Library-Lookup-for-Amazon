@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": "Library Lookup for Amazon",
-  "description": "Checks availability of books, DVDs and Blu-rays at your local Bay Area public library while browsing Amazon.com",
+  "description": "Checks availability of books, DVDs and Blu-Rays at your local Bay Area public library while browsing Amazon.com",
   "permissions": [
     "storage"
   ],
